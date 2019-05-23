@@ -5,13 +5,16 @@ import Table from './table.js';
 import Clock from './clock.js';
 import * as storage from './store.js';
 
-class App { 
-    constructor(message='duke') { 
+// Command Line
+//browser-sync start -s src -f src -b "google chrome" --no-notify
+
+class App {
+    constructor(message = 'duke') {
         this.message = message;
         this.first = new Text('first');
         this.second = new Text('second');
         this.table = new Table('answers');
-        const listener =  e => console.log(e);
+        const listener = e => console.log(e);
         this.firstInput = new Input('firstInput', listener);
         this.answer = new Answer();
         this.answerButton = Text.lookup('slow');
@@ -23,24 +26,25 @@ class App {
         this.init();
     }
 
-    time(time) { 
+    time(time) {
         this.first.content(time);
     }
 
-    init() { 
+    init() {
         this.first.content(`first content: ${this.message}`);
         this.second.content("another content");
         this.answerButton.onclick = this.getAnswer;
     }
 
-    
-    async getAnswer() { 
+
+    async getAnswer() {
+        this.answer.answer = "hello";
         let result = this.store.load();
         if (!result) {
             try {
-                result = await this.answer.answer;
+                result = await this.answer.answer; // no () for anwer getter
                 this.store.store(result);
-            
+
             } catch (e) {
                 console.error(`error happened: ${e}`);
             }
@@ -48,11 +52,12 @@ class App {
         this.output(result);
     }
 
-    output(data) { 
-        const [first] = data;
+    output(data) {
+        const [first, ...everything] = data;
         const keys = Reflect.ownKeys(first);
+        this.table.clearTable();
         keys.forEach(name => this.table.addHeader(name));
-        for (let row of data) { 
+        for (let row of data) {
             this.table.addRow(keys.map(key => row[key]));
         }
     }
