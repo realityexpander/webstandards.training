@@ -13,21 +13,19 @@ export default class Table {
     }
     addRow(columns) {
         const row = document.createElement('tr');
-        columns.
-            map(col => this.td(col)).
-            forEach(td => row.appendChild(td));
+        columns
+            .map(col => this.td(col))
+            .forEach(td => row.appendChild(td));
 
         this.body.appendChild(row);
     }
 
     clearTable() {
         // this.head.innerHTML = '';
-        while (this.head.firstChild) {
+        while (this.head.firstChild) { // faster
             this.head.removeChild(this.head.firstChild);
         }
-
         // this.body.innerHTML='';
-
     }
 
     td(text) {
